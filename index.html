@@ -5,39 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rekta Movies</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <nav class="navbar">
-    <img src="logo.png" alt="Logo" />
+    <span class="logo">🎬 Rekta Movies</span>
     <div class="nav-links">
-      <a href="#"><i class="fa-solid fa-house"></i> Home</a>
-      <a href="#" onclick="showLiveTv()"><i class="fa-solid fa-tower-broadcast"></i> Live TV</a>
-      <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()"/>
-      <button onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      <a href="#" onclick="showHome()">Home</a>
+      <a href="#" onclick="showLiveTV()">Live TV</a>
+      <a href="#" onclick="showWatchlist()">Watchlist</a>
+      <span id="visitor-counter"></span>
     </div>
   </nav>
 
-  <section class="content">
+  <main id="main-content">
     <div class="poster-container">
-      <img id="modal-image" src="" alt="Poster">
+      <img id="poster" src="placeholder.jpg" alt="Poster">
     </div>
-    <div class="video-container">
-      <iframe id="modal-video" allowfullscreen></iframe>
+    <video id="custom-player" controls poster="placeholder.jpg">
+      <source id="video-source" src="" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="details">
+      <h2 id="title">Title Here</h2>
+      <div class="stars" id="rating"></div>
+      <p id="description">Description goes here...</p>
+      <button onclick="addToWatchlist()">Add to Watchlist</button>
     </div>
-    <div class="server-selector">
-      <label for="server">Change Server:</label>
-      <select id="server" onchange="changeServer()">
-        <option value="vidsrc.cc">Vidsrc.cc</option>
-        <option value="vidsrc.me">Vidsrc.me</option>
-        <option value="player.videasy.net">Player.Videasy.net</option>
-        <option value="mappletv">Mapple TV</option>
-      </select>
-    </div>
-    <h2 id="modal-title"></h2>
-    <div id="modal-rating" class="stars"></div>
-    <p id="modal-description"></p>
-  </section>
+
+    <section id="live-tv" style="display: none;">
+      <h2>Live TV Channels</h2>
+      <div id="channel-list"></div>
+    </section>
+
+    <section id="watchlist-section" style="display: none;">
+      <h2>Your Watchlist</h2>
+      <ul id="watchlist"></ul>
+    </section>
+  </main>
 
   <script src="app.js"></script>
 </body>
