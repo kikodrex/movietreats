@@ -4,16 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rekta Movies</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/home.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script defer src="app.js"></script>
+  <script defer src="js/home.js"></script>
 </head>
 <body>
   <nav class="navbar">
     <img src="logo.png" alt="Rekta Movies Logo" />
     <div class="nav-links">
       <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="#" onclick="showLiveTv()"><i class="fa-solid fa-tower-broadcast"></i> Live TV</a>
       <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <i class="fa-solid fa-circle-half-stroke"></i>
@@ -21,50 +22,48 @@
     </div>
   </nav>
 
-  <div class="banner" id="banner">
+  <header class="banner" id="banner">
     <h1 id="banner-title"></h1>
-  </div>
+  </header>
 
-  <section class="row">
-    <h2><i class="fa-solid fa-film"></i> Trending Movies</h2>
-    <div class="list" id="movies-list"></div>
-  </section>
+  <main>
+    <section class="row">
+      <h2><i class="fa-solid fa-film"></i> Trending Movies</h2>
+      <div class="list" id="movies-list"></div>
+    </section>
 
-  <section class="row">
-    <h2><i class="fa-solid fa-tv"></i> Trending TV Shows</h2>
-    <div class="list" id="tvshows-list"></div>
-  </section>
+    <section class="row">
+      <h2><i class="fa-solid fa-tv"></i> Trending TV Shows</h2>
+      <div class="list" id="tvshows-list"></div>
+    </section>
 
-  <section class="row">
-    <h2><i class="fa-solid fa-dragon"></i> Trending Anime</h2>
-    <div class="list" id="anime-list"></div>
-  </section>
+    <section class="row">
+      <h2><i class="fa-solid fa-dragon"></i> Trending Anime</h2>
+      <div class="list" id="anime-list"></div>
+    </section>
 
-  <section class="row">
-    <h2><i class="fa-solid fa-heart"></i> Your Watchlist</h2>
-    <div class="list" id="watchlist"></div>
-  </section>
+    <section class="row">
+      <h2><i class="fa-solid fa-heart"></i> Your Watchlist</h2>
+      <div class="list" id="watchlist"></div>
+    </section>
+  </main>
 
   <div class="modal" id="modal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal()" aria-label="Close">&times;</span>
-
+      <span class="close" onclick="closeModal()">&times;</span>
       <div class="modal-body">
-        <img id="modal-image" src="" alt="" loading="lazy" />
-
         <div class="modal-video-wrapper">
           <iframe id="modal-video" allowfullscreen title="Player"></iframe>
         </div>
-
         <div class="server-selector">
-          <label for="server">Change Server:</label>
+          <label for="server">Server:</label>
           <select id="server" onchange="changeServer()">
             <option value="vidsrc.cc">Vidsrc.cc</option>
             <option value="vidsrc.me">Vidsrc.me</option>
-            <option value="player.videasy.net">Player.Videasy.net</option>
+            <option value="player.videasy.net">Videasy</option>
+            <option value="mappletv">MappleTV</option>
           </select>
         </div>
-
         <div class="modal-text">
           <h2 id="modal-title"></h2>
           <div class="stars" id="modal-rating"></div>
@@ -76,20 +75,13 @@
   </div>
 
   <div class="search-modal" id="search-modal">
-    <span class="close" onclick="closeSearchModal()" aria-label="Close">&times;</span>
-    <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDBDebounced()" />
+    <span class="close" onclick="closeSearchModal()">&times;</span>
+    <input type="text" id="search-input" placeholder="Search..." oninput="searchTMDBDebounced()" />
     <div class="results" id="search-results"></div>
   </div>
 
   <footer class="footer">
-    <div class="footer-content">
-      <p>&copy; 2025 Rekta Movies. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="#"><i class="fa-solid fa-shield"></i> Disclaimer</a>
-        <a href="#"><i class="fa-solid fa-circle-info"></i> About Us</a>
-        <a href="#"><i class="fa-solid fa-envelope"></i> Contact Us</a>
-      </div>
-    </div>
+    <p>&copy; 2025 Rekta Movies. All rights reserved.</p>
   </footer>
 </body>
 </html>
