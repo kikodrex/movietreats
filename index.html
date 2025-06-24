@@ -2,48 +2,94 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rekta Movies</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/home.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script defer src="js/home.js"></script>
 </head>
 <body>
   <nav class="navbar">
-    <span class="logo">🎬 Rekta Movies</span>
+    <img src="logo.png" alt="Rekta Movies Logo" />
     <div class="nav-links">
-      <a href="#" onclick="showHome()">Home</a>
-      <a href="#" onclick="showLiveTV()">Live TV</a>
-      <a href="#" onclick="showWatchlist()">Watchlist</a>
-      <span id="visitor-counter"></span>
+      <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+      <input type="text" class="search-bar" placeholder="Search..." onfocus="openSearchModal()" />
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+      </button>
     </div>
   </nav>
 
-  <main id="main-content">
-    <div class="poster-container">
-      <img id="poster" src="placeholder.jpg" alt="Poster">
+  <div class="banner" id="banner">
+    <h1 id="banner-title"></h1>
+  </div>
+
+  <section class="row">
+    <h2><i class="fa-solid fa-film"></i> Trending Movies</h2>
+    <div class="list" id="movies-list"></div>
+  </section>
+
+  <section class="row">
+    <h2><i class="fa-solid fa-tv"></i> Trending TV Shows</h2>
+    <div class="list" id="tvshows-list"></div>
+  </section>
+
+  <section class="row">
+    <h2><i class="fa-solid fa-dragon"></i> Trending Anime</h2>
+    <div class="list" id="anime-list"></div>
+  </section>
+
+  <section class="row">
+    <h2><i class="fa-solid fa-heart"></i> Your Watchlist</h2>
+    <div class="list" id="watchlist"></div>
+  </section>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()" aria-label="Close">&times;</span>
+
+      <div class="modal-body">
+        <img id="modal-image" src="" alt="" loading="lazy" />
+
+        <div class="modal-video-wrapper">
+          <iframe id="modal-video" allowfullscreen title="Player"></iframe>
+        </div>
+
+        <div class="server-selector">
+          <label for="server">Change Server:</label>
+          <select id="server" onchange="changeServer()">
+            <option value="vidsrc.cc">Vidsrc.cc</option>
+            <option value="vidsrc.me">Vidsrc.me</option>
+            <option value="player.videasy.net">Player.Videasy.net</option>
+          </select>
+        </div>
+
+        <div class="modal-text">
+          <h2 id="modal-title"></h2>
+          <div class="stars" id="modal-rating"></div>
+          <p id="modal-description"></p>
+          <button onclick="addToWatchlist()"><i class="fa-solid fa-bookmark"></i> Add to Watchlist</button>
+        </div>
+      </div>
     </div>
-    <video id="custom-player" controls poster="placeholder.jpg">
-      <source id="video-source" src="" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  </div>
 
-    <div class="details">
-      <h2 id="title">Title Here</h2>
-      <div class="stars" id="rating"></div>
-      <p id="description">Description goes here...</p>
-      <button onclick="addToWatchlist()">Add to Watchlist</button>
+  <div class="search-modal" id="search-modal">
+    <span class="close" onclick="closeSearchModal()" aria-label="Close">&times;</span>
+    <input type="text" id="search-input" placeholder="Search for a movie or show..." oninput="searchTMDBDebounced()" />
+    <div class="results" id="search-results"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Rekta Movies. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#"><i class="fa-solid fa-shield"></i> Disclaimer</a>
+        <a href="#"><i class="fa-solid fa-circle-info"></i> About Us</a>
+        <a href="#"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+      </div>
     </div>
-
-    <section id="live-tv" style="display: none;">
-      <h2>Live TV Channels</h2>
-      <div id="channel-list"></div>
-    </section>
-
-    <section id="watchlist-section" style="display: none;">
-      <h2>Your Watchlist</h2>
-      <ul id="watchlist"></ul>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
+  </footer>
 </body>
 </html>
