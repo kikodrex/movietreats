@@ -4,61 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rekta Movies</title>
-  <link rel="shortcut icon" href="./images/Netflix_icon.svg.png" />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script defer src="js/home.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script defer src="home.js"></script>
 </head>
-<body class="dark">
-
-  <!-- NAVBAR -->
+<body>
   <nav class="navbar">
-    <img src="./images/logo.png" alt="Rekta Movies Logo" class="logo" />
+    <img src="logo.png" class="logo" alt="Rekta Movies Logo">
     <div class="nav-actions">
-      <input type="text" placeholder="Search..." class="search-bar" onfocus="openSearchModal()" />
-      <button onclick="toggleTheme()" class="theme-btn">
+      <input type="text" class="search-bar" placeholder="Search..." oninput="searchTMDBDebounced()">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
         <i class="fa-solid fa-circle-half-stroke"></i>
       </button>
     </div>
   </nav>
 
-  <!-- HERO SECTION -->
   <header class="header-content">
-    <h1>Unlimited movies, TV shows and more</h1>
-    <h3>Watch anywhere. Cancel anytime.</h3>
-    <form class="email-signup" onsubmit="event.preventDefault();">
-      <input type="email" placeholder="Email address" required />
-      <button type="submit">Get Started</button>
-    </form>
+    <h1>Unlimited movies, TV shows, and more</h1>
+    <h3>Watch anywhere, anytime.</h3>
   </header>
 
-  <!-- FEATURED PLAYER -->
-  <section class="player-section">
-    <div class="poster-player">
-      <img id="modal-image" src="" alt="Poster" class="poster" />
-      <iframe id="modal-video" allowfullscreen title="Player"></iframe>
-    </div>
-
-    <div class="server-selector">
-      <label for="server">Change Server:</label>
-      <select id="server" onchange="changeServer()">
-        <option value="vidsrc.cc">Vidsrc.cc</option>
-        <option value="mapple">MappleTV</option>
-        <option value="custom">Custom</option>
-      </select>
-    </div>
-
-    <div class="modal-text">
-      <h2 id="modal-title">Title</h2>
-      <div class="stars" id="modal-rating"></div>
-      <p id="modal-description">Description goes here...</p>
-      <button onclick="addToWatchlist()">
-        <i class="fa-solid fa-bookmark"></i> Add to Watchlist
-      </button>
-    </div>
-  </section>
-
-  <!-- TRENDING LISTS -->
   <section class="features">
     <h2><i class="fa-solid fa-film"></i> Trending Movies</h2>
     <div class="list" id="movies-list"></div>
@@ -68,17 +33,36 @@
 
     <h2><i class="fa-solid fa-dragon"></i> Trending Anime</h2>
     <div class="list" id="anime-list"></div>
+
+    <h2><i class="fa-solid fa-tower-broadcast"></i> Live TV</h2>
+    <div class="list" id="livetv-list"></div>
   </section>
 
-  <!-- FOOTER -->
+  <div class="player-section" id="player-section" style="display: none;">
+    <div class="poster-player">
+      <img id="modal-image" src="" alt="Poster">
+    </div>
+    <iframe id="modal-video" allowfullscreen></iframe>
+    <div class="server-selector">
+      <label for="server">Server:</label>
+      <select id="server" onchange="changeServer()">
+        <option value="vidsrc.cc">Vidsrc.cc</option>
+      </select>
+    </div>
+    <div class="info">
+      <h2 id="modal-title"></h2>
+      <div id="modal-rating" class="stars"></div>
+      <p id="modal-description"></p>
+    </div>
+  </div>
+
   <footer class="footer">
-    <p>&copy; 2025 Rekta Movies. All rights reserved.</p>
+    <p>&copy; 2025 Rekta Movies</p>
     <div class="footer-links">
-      <a href="#">Disclaimer</a>
-      <a href="#">About Us</a>
-      <a href="#">Contact</a>
+      <a href="#"><i class="fa-solid fa-shield"></i> Disclaimer</a>
+      <a href="#"><i class="fa-solid fa-circle-info"></i> About</a>
+      <a href="#"><i class="fa-solid fa-envelope"></i> Contact</a>
     </div>
   </footer>
-
 </body>
 </html>
