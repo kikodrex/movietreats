@@ -1,144 +1,109 @@
 const API_KEY = 'b4dcc4d7e05faa999e28002a02c3607a';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_URL = 'https://image.tmdb.org/t/p/original';
-let currentItem;
 
-async function fetchTrending(type) {
+// Theme toggle
+function toggleTheme() {
+  document.body.classList.toggle('light-mode');
+  localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+}
+
+// Load saved theme
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light-mode');
+}
+
+// Fetch and display trending movies/TV
+async function init() {
+  const movies = await fetchData('movie');
+  const tvshows = await fetchData('tv');
+  displayList(movies, 'movies-list', 'movie');
+  displayList(tvshows, 'tvshows-list', 'tv');
+}
+
+// Fetch data from TMDB
+async function fetchData(type) {
   const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
   const data = await res.json();
   return data.results;
 }
 
-async function fetchTrendingAnime() {
-  let all = [];
-  for (let p = 1; p <= 2; p++) {
-    const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${p}`);
-    const data = await res.json();
-    all = all.concat(data.results.filter(i => i.original_language === 'ja' && i.genre_ids.includes(16)));
-  }
-  return all;
-}
-
-function displayBanner(item) {
-  document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
-  document.getElementById('banner-title').textContent = item.title || item.name;
-}
-
-function displayList(items, id) {
-  const container = document.getElementById(id);
+// Display poster list
+function displayList(items, containerId, mediaType) {
+  const container = document.getElementById(containerId);
   container.innerHTML = '';
   items.forEach(item => {
-    if (!item.poster_path) return;
     const img = document.createElement('img');
     img.src = `${IMG_URL}${item.poster_path}`;
     img.alt = item.title || item.name;
-    img.onclick = () => showDetails(item);
+    img.onclick = () => addToWatchlist(item, mediaType);
     container.appendChild(img);
   });
 }
 
-function showDetails(item) {
-  currentItem = item;
-  document.getElementById('modal').style.display = 'flex';
-  document.getElementById('modal-title').textContent = item.title || item.name;
-  document.getElementById('modal-description').textContent = item.overview;
-  document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
-  changeServer();
+// Show sections
+function showHome() {
+  document.getElementById('home-section').style.display = 'block';
+  document.getElementById('live-tv-section').style.display = 'none';
+  document.getElementById('watchlist-section').style.display = 'none';
 }
 
-function changeServer() {
-  const server = document.getElementById('server').value;
-  let url = '';
-  if (server === 'vidsrc.cc') {
-    url = `https://vidsrc.cc/v2/embed/${currentItem.media_type}/${currentItem.id}`;
-  } else if (server === 'vidsrc.me') {
-    url = `https://vidsrc.net/embed/${currentItem.media_type}/?tmdb=${currentItem.id}`;
-  } else if (server === 'player.videasy.net') {
-    url = `https://player.videasy.net/${currentItem.media_type}/${currentItem.id}`;
-  } else if (server === 'mappletv') {
-    url = currentItem.media_type === 'movie'
-      ? `https://mappletv.uk/watch/movie/${currentItem.id}`
-      : `https://mappletv.uk/watch/tv/${currentItem.id}-1-1`;
-  }
-  document.getElementById('modal-video').src = url;
+function showWatchlist() {
+  document.getElementById('home-section').style.display = 'none';
+  document.getElementById('live-tv-section').style.display = 'none';
+  document.getElementById('watchlist-section').style.display = 'block';
+  loadWatchlist();
 }
 
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-  document.getElementById('modal-video').src = '';
-}
+// Live TV
+async function showLiveTv() {
+  document.getElementById('home-section').style.display = 'none';
+  document.getElementById('live-tv-section').style.display = 'block';
+  document.getElementById('watchlist-section').style.display = 'none';
 
-function openSearchModal() {
-  document.getElementById('search-modal').style.display = 'flex';
-}
-
-function closeSearchModal() {
-  document.getElementById('search-modal').style.display = 'none';
-}
-
-function debounce(fn, delay) {
-  let t;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
-const searchTMDBDebounced = debounce(searchTMDB, 300);
-
-async function searchTMDB() {
-  const query = document.getElementById('search-input').value;
-  if (!query) return;
-  const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+  const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}`);
   const data = await res.json();
-  const results = document.getElementById('search-results');
-  results.innerHTML = '';
-  data.results.forEach(item => {
-    if (!item.poster_path) return;
-    const img = document.createElement('img');
-    img.src = `${IMG_URL}${item.poster_path}`;
-    img.onclick = () => {
-      closeSearchModal();
-      showDetails(item);
-    };
-    results.appendChild(img);
+
+  const container = document.getElementById('live-tv-list');
+  container.innerHTML = '';
+
+  data.results.slice(0, 5).forEach(show => {
+    const tmdb_id = show.id;
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://mappletv.uk/watch/tv/${tmdb_id}-1-1`;
+    iframe.allowFullscreen = true;
+    iframe.loading = 'lazy';
+
+    const title = document.createElement('h3');
+    title.textContent = show.name;
+
+    container.appendChild(title);
+    container.appendChild(iframe);
   });
 }
 
-function addToWatchlist() {
-  let list = JSON.parse(localStorage.getItem('watchlist')) || [];
-  if (!list.find(i => i.id === currentItem.id)) {
-    list.push(currentItem);
-    localStorage.setItem('watchlist', JSON.stringify(list));
-    renderWatchlist();
+// Watchlist
+function addToWatchlist(item, mediaType) {
+  const watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+  if (!watchlist.find(x => x.id === item.id)) {
+    watchlist.push({ id: item.id, poster: item.poster_path, title: item.title || item.name, mediaType });
+    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+    alert('Added to Watchlist!');
+  } else {
+    alert('Already in Watchlist');
   }
 }
 
-function renderWatchlist() {
-  const list = JSON.parse(localStorage.getItem('watchlist')) || [];
-  const container = document.getElementById('watchlist');
+function loadWatchlist() {
+  const list = JSON.parse(localStorage.getItem('watchlist') || '[]');
+  const container = document.getElementById('watchlist-list');
   container.innerHTML = '';
   list.forEach(item => {
     const img = document.createElement('img');
-    img.src = `${IMG_URL}${item.poster_path}`;
-    img.onclick = () => showDetails(item);
+    img.src = `${IMG_URL}${item.poster}`;
+    img.alt = item.title;
     container.appendChild(img);
   });
-}
-
-function toggleTheme() {
-  document.body.classList.toggle('light-theme');
-}
-
-async function init() {
-  const movies = await fetchTrending('movie');
-  const tv = await fetchTrending('tv');
-  const anime = await fetchTrendingAnime();
-  displayBanner(movies[Math.floor(Math.random() * movies.length)]);
-  displayList(movies, 'movies-list');
-  displayList(tv, 'tvshows-list');
-  displayList(anime, 'anime-list');
-  renderWatchlist();
 }
 
 init();
